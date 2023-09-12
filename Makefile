@@ -1,3 +1,5 @@
+include config.mk
+
 ## Application
 
 deploy: 
@@ -7,7 +9,7 @@ destroy:
 	$(MAKE) start action=destroy environment=$(environment)
 
 list:
-	$(MAKE) start action=show environment=$(environment)
+	$(MAKE) show
 
 .PHONY: install
 install:
@@ -15,25 +17,25 @@ install:
 	chmod +x scripts/run.sh
 	scripts/run.sh
 
-## Development
-
-environment ?= dev
-
 ### S3
+
+community:
+	pip install --user ansible[community.aws]
+	pip install --user boto3
 
 git_submodule:
 	git submodule add $(submodule) app/$(app_name)
 
 build_app:
-	cd app/$(app_name)
-	npm install
-	npm run build
+	cd app/$(app_name) && npm i && npm run build
 
-bucket_sync:
-	aws s3 sync app/Boilerplate/build s3://dyallab
+# Requires boto3 installed with pip
+# https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html#installation
+ansible_sync:
+	ansible-playbook ansible/playbook/s3_sync.yml -e "bucket_name=$(bucket_name)" -e "app_name=$(app_name)" -i ansible/inventory/hosts
 
-bucket_rm:
-	aws s3 rm --recursive s3://dyallab
+ansible_rm: 
+	ansible-playbook ansible/playbook/s3_rm.yml -e "bucket_name=$(bucket_name)"
 
 ### Terraform
 
@@ -49,6 +51,9 @@ upgrade:
 start:
 	cd terraform && terraform $(action) -var-file="config/$(environment).tfvars" -compact-warnings
 
+show:
+	cd terraform && terraform show -json -compact-warnings | jq
+
 plan:
 	cd terraform && terraform plan -var-file="config/$(environment).tfvars" -compact-warnings
 
@@ -57,8 +62,3 @@ refresh:
 
 output:
 	cd terraform && terraform output
-
-### Ansible
-
-playbook:
-	ansible-playbook ansible/playbook/$(playbook) -i ansible/inventory

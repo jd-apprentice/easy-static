@@ -1,0 +1,15 @@
+---
+- name: Delete all objects from an S3 bucket
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Delete objects from S3
+      community.aws.s3:
+        bucket: "{{ bucket_name }}"
+        object: "*"
+        mode: "absent"
+      register: delete_result
+
+    - name: Display deletion results
+      debug:
+        var: delete_result

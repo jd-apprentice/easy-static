@@ -28,7 +28,7 @@ output "s3_bucket_name" {
   value       = module.static_s3_bucket.bucket_name
 }
 
-output "s3_bucket_domain" {
-  description = "Domain of the S3 bucket"
-  value       = module.static_s3_bucket.bucket_domain
+output "s3_bucket_endpoint" {
+  description = "Endpoint of the S3 bucket"
+  value       = module.static_s3_bucket.bucket_endpoint
 }

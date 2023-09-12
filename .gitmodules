@@ -1,0 +1,3 @@
+[submodule "app/Boilerplate"]
+	path = app/Boilerplate
+	url = git@github.com:jd-apprentice/React-Boilerplate.git

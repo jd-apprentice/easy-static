@@ -1,13 +1,13 @@
 ## Application
 
 deploy: 
-	$(MAKE) start action=apply
+	$(MAKE) start action=apply environment=$(environment)
 
 destroy:
-	$(MAKE) start action=destroy
+	$(MAKE) start action=destroy environment=$(environment)
 
 list:
-	$(MAKE) start action=show
+	$(MAKE) start action=show environment=$(environment)
 
 .PHONY: install
 install:
@@ -17,13 +17,25 @@ install:
 
 ## Development
 
-cp:
-	aws s3 cp files s3://$(terraform output -raw s3_bucket_name)/ --recursive --profile terraform-user
-
-rm:
-	aws s3 rm s3://$(terraform output -raw s3_bucket_name)/ --recursive --profile terraform-user
-
 environment ?= dev
+
+### S3
+
+git_submodule:
+	git submodule add $(submodule) app/$(app_name)
+
+build_app:
+	cd app/$(app_name)
+	npm install
+	npm run build
+
+bucket_sync:
+	aws s3 sync app/Boilerplate/build s3://dyallab
+
+bucket_rm:
+	aws s3 rm --recursive s3://dyallab
+
+### Terraform
 
 init:
 	cd terraform && terraform init
@@ -45,6 +57,8 @@ refresh:
 
 output:
 	cd terraform && terraform output
+
+### Ansible
 
 playbook:
 	ansible-playbook ansible/playbook/$(playbook) -i ansible/inventory

@@ -8,7 +8,7 @@ output "bucket_name" {
   value       = aws_s3_bucket.s3_static_website.id
 }
 
-output "bucket_domain" {
-  description = "Domain of the S3 bucket"
-  value       = aws_s3_bucket_website_configuration.s3_static_website.website_domain
+output "bucket_endpoint" {
+  description = "Endpoint of the S3 bucket"
+  value       = aws_s3_bucket_website_configuration.s3_static_website.website_endpoint
 }

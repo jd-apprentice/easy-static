@@ -1,17 +1,17 @@
 ---
 - name: Sync files with S3
   hosts: localhost
-  gather_facts: False
+  gather_facts: no
   tasks:
     - name: Sync files with S3
       community.aws.s3_sync:
         bucket: "{{ bucket_name }}"
-        file_root: "app/{{ app_name }}/build"
-        region: "us-east-1"
-        permission: public-read
+        ## The path starts from where the playbook is executed
+        file_root: "../../app/{{ app_name }}/build"
         include: "*"
+        permission: public-read
       register: sync_result
 
     - name: Print sync result
-      debug:
-        var: sync_result
+      ansible.builtin.debug:
+        msg: "{{ sync_result }}"

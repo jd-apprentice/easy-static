@@ -1,0 +1,16 @@
+---
+- name: List files in S3
+  hosts: localhost
+  gather_facts: no
+  tasks:
+  - name: List files in S3
+    community.aws.s3_bucket_info:
+      aws_secret_key: "{{ secret_key }}"
+      aws_access_key: "{{ access_key }}"
+      name: "{{ bucket_name }}"
+      region: "us-east-1"
+    register: result
+
+  - name: List buckets
+    ansible.builtin.debug:
+      msg: "{{ result }}"

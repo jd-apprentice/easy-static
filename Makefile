@@ -20,6 +20,7 @@ install:
 ### S3
 
 community:
+	ansible-galaxy collection install community.aws
 	pip install --user ansible[community.aws]
 	pip install --user boto3
 
@@ -31,6 +32,9 @@ build_app:
 
 # Requires boto3 installed with pip
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html#installation
+ansible_list:
+	ansible-playbook ansible/playbook/s3_list.yml -e "bucket_name=$(bucket_name)" -e "access_key=$(access_key)" -e "secret_key=$(secret_key)" -i ansible/inventory/hosts
+
 ansible_sync:
 	ansible-playbook ansible/playbook/s3_sync.yml -e "bucket_name=$(bucket_name)" -e "app_name=$(app_name)" -i ansible/inventory/hosts
 

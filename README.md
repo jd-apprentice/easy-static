@@ -2,7 +2,8 @@
 
 Manage your static site with ease. Easy Static is a simple static site deployment tool that allows you to deploy your static site to multiple hosts with a single command.
 
-![design](design/easy-static-new.png)
+![design](design/idea.png)
+![infra](design/infra.png)
 
 ## Software requirements 📦
 

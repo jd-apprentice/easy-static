@@ -27,11 +27,27 @@ resource "aws_s3_bucket_acl" "s3_static_website" {
   acl    = "public-read"
 }
 
+resource "aws_cloudfront_origin_access_identity" "s3_static_website" {
+  comment = "Access identity for static website"
+}
+
+resource "aws_cloudfront_origin_access_control" "s3_static_website" {
+  name                              = "origin-access-identity/${aws_s3_bucket.s3_static_website.id}"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 resource "aws_cloudfront_distribution" "s3_static_website" {
   origin {
     domain_name              = aws_s3_bucket.s3_static_website.bucket_regional_domain_name
-    origin_id                = aws_s3_bucket.s3_static_website.id
-    origin_access_control_id = aws_s3_bucket.s3_static_website.arn
+    origin_id                = "MainOrigin"
+    origin_access_control_id = aws_cloudfront_origin_access_control.s3_static_website.id
+  }
+
+  origin {
+    domain_name = aws_s3_bucket.s3_static_website.bucket_regional_domain_name
+    origin_id   = "FailoverOrigin"
   }
 
   enabled             = true
@@ -44,7 +60,7 @@ resource "aws_cloudfront_distribution" "s3_static_website" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = aws_s3_bucket.s3_static_website.id
+    target_origin_id = "DefaultOriginGroup"
 
     forwarded_values {
       query_string = false
@@ -66,9 +82,26 @@ resource "aws_cloudfront_distribution" "s3_static_website" {
     }
   }
 
+  origin_group {
+    origin_id = "DefaultOriginGroup"
+
+    member {
+      origin_id = "MainOrigin"
+    }
+
+    member {
+      origin_id = "FailoverOrigin"
+    }
+
+    failover_criteria {
+      status_codes = [403, 404, 500, 502]
+    }
+  }
+
   viewer_certificate {
     cloudfront_default_certificate = false
-    acm_certificate_arn            = var.acm_certificate
+    acm_certificate_arn            = aws_acm_certificate.s3_static_website.arn
+    ssl_support_method             = "sni-only"
   }
 
   tags = var.s3_tags

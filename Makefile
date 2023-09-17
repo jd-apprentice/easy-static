@@ -12,7 +12,8 @@ destroy:
 
 .PHONY: list
 list:
-	$(MAKE) show
+	$(MAKE) start action=show environment=$(environment)
+	cat files/$(environment).json | jq
 
 .PHONY: install
 install:
@@ -80,7 +81,7 @@ start_noargs:
 .PHONY: start	
 start:
 ifeq ($(action), show)
-	cd terraform && terraform show -json -compact-warnings | jq
+	cd terraform && terraform show -json -compact-warnings > ../files/$(environment).json
 else
 	@echo "Running terraform $(action)..."
 	cd terraform && terraform $(action) -var-file="config/$(environment).tfvars" -compact-warnings

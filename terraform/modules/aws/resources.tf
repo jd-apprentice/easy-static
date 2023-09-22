@@ -40,9 +40,9 @@ resource "aws_cloudfront_origin_access_control" "s3_static_website" {
 
 resource "aws_cloudfront_distribution" "s3_static_website" {
   origin {
-    domain_name              = aws_s3_bucket.s3_static_website.bucket_regional_domain_name
-    origin_id                = "MainOrigin"
-    origin_access_control_id = aws_cloudfront_origin_access_control.s3_static_website.id
+    domain_name = aws_s3_bucket.s3_static_website.bucket_regional_domain_name
+    origin_id   = "MainOrigin"
+    # origin_access_control_id = aws_cloudfront_origin_access_control.s3_static_website.id
   }
 
   origin {
@@ -99,7 +99,7 @@ resource "aws_cloudfront_distribution" "s3_static_website" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = false
+    cloudfront_default_certificate = true
     acm_certificate_arn            = aws_acm_certificate.s3_static_website.arn
     ssl_support_method             = "sni-only"
   }
@@ -121,7 +121,7 @@ resource "aws_route53_record" "s3_static_website" {
 
 resource "aws_acm_certificate" "s3_static_website" {
   domain_name       = var.route53_record_name
-  validation_method = "DNS"
+  validation_method = "EMAIL"
 
   validation_option {
     domain_name       = var.route53_record_name

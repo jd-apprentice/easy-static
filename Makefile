@@ -13,7 +13,6 @@ destroy:
 .PHONY: list
 list:
 	$(MAKE) start action=show environment=$(environment)
-	cat files/$(environment).json | jq
 
 .PHONY: install
 install:
@@ -63,7 +62,7 @@ ansible_sync:
 .PHONY: ansible_rm
 ansible_rm:
 	$(MAKE) echo
-	ansible-playbook ansible/playbook/s3_rm.yml -e "bucket_name=$(bucket_name)"
+	ansible-playbook ansible/playbook/s3_remove.yml -e "bucket_name=$(bucket_name)" -i ansible/inventory/hosts
 
 ### Terraform
 
@@ -80,8 +79,11 @@ start_noargs:
 #### apply - destroy - plan - show - refresh ####
 .PHONY: start	
 start:
+
+## jq -r '(.$(jsonnames) | tostring) + " | " + (.$(jsonvalues) | tojson)'
+
 ifeq ($(action), show)
-	cd terraform && terraform show -json -compact-warnings > ../files/$(environment).json
+	cd terraform && terraform show -json -compact-warnings | jq -r '(.$(jsonnames) | tostring) + " | " + (.$(jsonvalues) | tostring)'
 else
 	@echo "Running terraform $(action)..."
 	cd terraform && terraform $(action) -var-file="config/$(environment).tfvars" -compact-warnings

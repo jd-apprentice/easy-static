@@ -80,8 +80,6 @@ start_noargs:
 .PHONY: start	
 start:
 
-## jq -r '(.$(jsonnames) | tostring) + " | " + (.$(jsonvalues) | tojson)'
-
 ifeq ($(action), show)
 	cd terraform && terraform show -json -compact-warnings | jq -r '(.$(jsonnames) | tostring) + " | " + (.$(jsonvalues) | tostring)'
 else

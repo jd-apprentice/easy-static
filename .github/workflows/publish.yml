@@ -5,6 +5,7 @@ on:
     branches: [ "master" ]
     paths: [ 
       "docker/*.Dockerfile",
+      ".github/workflows/publish.yml",
       ]
   pull_request:
     branches: [ "master" ]
@@ -20,7 +21,6 @@ jobs:
       run: docker build . --file docker/es.Dockerfile --tag easy-static:$(date +%s)
     
     - name: Store image on GitHub Packages
-      depends-on: build
       run: |
         docker tag easy-static:$(date +%s) docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:$(date +%s)
         docker push docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:$(date +%s)

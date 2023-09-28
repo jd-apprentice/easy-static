@@ -40,6 +40,20 @@ AppImage
 
 - Soon...
 
+## Documentation 📕
+
+Build example
+
+```bash
+make build -f docker.mk image_name="easy-static"
+```
+
+Run command example
+
+```bash
+make run -f docker.mk image_name="easy-static" command="start" action="output" environment="dev"
+```
+
 ## File structure 📁
 
 ```
@@ -92,20 +106,6 @@ AppImage
 ┣ 📄 .gitmodules
 ┣ 📄 Makefile
 ┗ 📄 README.md
-```
-
-## Documentation 📕
-
-Build example
-
-```bash
-make build -f docker.mk image_name="easy-static"
-```
-
-Run command example
-
-```bash
-make run -f docker.mk image_name="easy-static" command="start" action="output" environment="dev"
 ```
 
 ## License 📰

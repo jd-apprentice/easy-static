@@ -1,11 +1,18 @@
-## Base image
-FROM debian:stable-20230919-slim
+## Base image - TODO: Find a smaller base image
+FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y curl unzip make wget && \
-    curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
-    apt-get install -y apt-transport-https && \
-    echo "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list && \
-    apt-get update && apt-get install -y terraform
+RUN apt-get update && apt-get install -y sudo curl make wget gnupg software-properties-common
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | \
+    gpg --dearmor | \
+    sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+RUN gpg --no-default-keyring \
+    --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+    --fingerprint
+RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+    https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+    sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+RUN apt-get update && apt-get install -y terraform
 
 RUN apt-get install -y python3-pip
 RUN pip install ansible
@@ -20,6 +27,7 @@ RUN cd easy-static
 
 ARG action
 ARG environment
+ARG command
 
 ENV aws_access_key=${aws_access_key}
 ENV aws_secret_key=${aws_secret_key}
@@ -31,5 +39,4 @@ ENV route53_record_name=${route53_record_name}
 ENV route53_base_domain=${route53_base_domain}
 ENV acm_certificate=${acm_certificate}
 
-## Copy environment variables depending on environment
-COPY .env /easy-static/terraform/config/${environment}.tfvars
+ENTRYPOINT ["sh", "-c", "cd easy-static && make ${command} action=${action} environment=${environment}"]

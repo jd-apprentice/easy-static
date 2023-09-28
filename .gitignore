@@ -38,3 +38,4 @@ terraform.rc
 *.hcl
 *.html
 *.json
+*.env

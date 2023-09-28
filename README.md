@@ -16,7 +16,10 @@ Manage your static site with ease. Easy Static is a simple static site deploymen
 
 ## Design 🖌
 
-![design](design/idea.png)
+<p align="center">
+  <img width="408" height="789" src="https://github.com/jd-apprentice/easy-static/assets/68082746/4964884c-d32b-450d-bae4-864647695812">
+</p>
+
 ![infra](design/infra.png)
 
 ## Software requirements 📦

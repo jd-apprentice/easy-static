@@ -18,19 +18,19 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file docker/es.Dockerfile --tag easy-static:$(date +%s)
+      run: docker build . --file docker/es.Dockerfile --tag easy-static:latest
     
     - name: Store image on GitHub Packages
       run: |
-        docker tag easy-static:$(date +%s) docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:$(date +%s)
-        docker push docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:$(date +%s)
+        docker tag easy-static:latest docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:latest
+        docker push docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
       with:
-        image-ref: docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:$(date +%s)
+        image-ref: docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:latest
         format: 'template'
         template: '@/contrib/sarif.tpl'
         output: 'trivy-results.sarif'

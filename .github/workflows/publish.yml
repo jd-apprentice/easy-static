@@ -1,4 +1,4 @@
-name: Build Docker image and publish to GitHub Packages and run Trivy vulnerability scanner
+name: Build Docker image and publish to GitHub Packages
 
 on:
   push:
@@ -19,24 +19,9 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker build . --file docker/es.Dockerfile --tag easy-static:latest
-    
-    - name: Store image on GitHub Packages
+
+    - name: Publish Docker image to GitHub Packages
       run: |
-        docker tag easy-static:latest docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:latest
-        docker push docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
-      with:
-        image-ref: docker.pkg.github.com/$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')/easy-static:latest
-        format: 'template'
-        template: '@/contrib/sarif.tpl'
-        output: 'trivy-results.sarif'
-        severity: 'CRITICAL,HIGH'
-
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: trivy-results.sarif
+        echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        docker tag easy-static:latest docker.pkg.github.com/${{ github.repository }}/easy-static:latest
+        docker push docker.pkg.github.com/${{ github.repository }}/easy-static:latest

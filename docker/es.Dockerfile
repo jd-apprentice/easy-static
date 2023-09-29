@@ -1,5 +1,5 @@
 ## Base image - TODO: Find a smaller base image
-FROM debian:stable-slim
+FROM ubuntu:devel
 
 RUN apt-get update && apt-get install -y sudo curl make wget gnupg software-properties-common
 RUN wget -O- https://apt.releases.hashicorp.com/gpg | \
@@ -14,11 +14,7 @@ RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
 
 RUN apt-get update && apt-get install -y terraform
 
-RUN apt-get install -y python3-pip python3-venv
-
-RUN python3 -m venv /opt/venv
-RUN source /opt/venv/bin/activate
-
+RUN apt-get install -y python3-pip
 RUN pip install ansible
 RUN pip install --user boto3
 RUN ansible-galaxy collection install amazon.aws

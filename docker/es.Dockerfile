@@ -1,5 +1,5 @@
 ## Base image - TODO: Find a smaller base image
-FROM ubuntu:latest
+FROM debian:stable-slim
 
 RUN apt-get update && apt-get install -y sudo curl make wget gnupg software-properties-common
 RUN wget -O- https://apt.releases.hashicorp.com/gpg | \
@@ -39,4 +39,5 @@ ENV route53_record_name=${route53_record_name}
 ENV route53_base_domain=${route53_base_domain}
 ENV acm_certificate=${acm_certificate}
 
-ENTRYPOINT ["sh", "-c", "cd easy-static && make ${command} action=${action} environment=${environment}"]
+ENTRYPOINT ["sh", "-c", "cd easy-static"]
+CMD ["/bin/bash"]

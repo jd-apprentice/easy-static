@@ -1,4 +1,4 @@
-name: Build Docker image and publish to GitHub Packages
+name: Docker
 
 on:
   push:
@@ -25,3 +25,7 @@ jobs:
         echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
         docker tag easy-static:latest docker.pkg.github.com/${{ github.repository }}/easy-static:latest
         docker push docker.pkg.github.com/${{ github.repository }}/easy-static:latest
+    
+      outputs:
+        time: ${{ steps.time.outputs.time }}
+        build-completed: true

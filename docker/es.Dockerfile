@@ -14,7 +14,7 @@ RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
 
 RUN apt-get update && apt-get install -y terraform
 
-RUN apt-get install -y python3-pip
+RUN apt-get install -y python3-pip python3-venv
 
 RUN python3 -m venv /opt/venv
 RUN source /opt/venv/bin/activate

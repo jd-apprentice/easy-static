@@ -3,14 +3,15 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: trivy
+name: Trivy
 
 on:
-  push:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Build Docker image and publish to GitHub Packages"]
     branches: [ "master" ]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ "master" ]
+    types:
+      - completed
   schedule:
     - cron: '30 0 * * 5'
 
@@ -19,6 +20,7 @@ permissions:
 
 jobs:
   build:
+    needs: docker.build-completed
     permissions:
       contents: read # for actions/checkout to fetch code
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results

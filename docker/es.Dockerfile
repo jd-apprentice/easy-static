@@ -15,6 +15,10 @@ RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
 RUN apt-get update && apt-get install -y terraform
 
 RUN apt-get install -y python3-pip
+
+RUN python3 -m venv /opt/venv
+RUN source /opt/venv/bin/activate
+
 RUN pip install ansible
 RUN pip install --user boto3
 RUN ansible-galaxy collection install amazon.aws

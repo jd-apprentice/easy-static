@@ -17,7 +17,7 @@ Use this section to inform people about which versions of your project are curre
 
 Use this section to explain how people can report a vulnerability in your project.
 
-- **Where to report**: To report a vulnerability, please go to [Issues](https://github.com/jd-apprentice/easy-static/issues).
+- **Where to report**: To report a vulnerability, please go to [Advisories](https://github.com/jd-apprentice/easy-static/security/advisories).
 
 - **Acceptance Criteria**: The evaluation of a vulnerability report will be based on severity as determined by a security scanning tool, such as Trivy. We will accept vulnerability reports that qualify as "high" or higher according to Trivy's assessment.
 

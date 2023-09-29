@@ -1,5 +1,5 @@
 ## Base image - TODO: Find a smaller base image
-FROM ubuntu:devel
+FROM ubuntu:jammy-20211029
 
 RUN apt-get update && apt-get install -y sudo curl make wget gnupg software-properties-common
 RUN wget -O- https://apt.releases.hashicorp.com/gpg | \
